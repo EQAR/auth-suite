@@ -1,0 +1,3 @@
+[submodule "ldapcherry"]
+	path = ldapcherry
+	url = git@github.com:EQAR/ldapcherry.git

@@ -1,0 +1,21 @@
+FROM ubuntu:latest
+
+ARG LC_ALL=C
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get -y update && apt-get install -y krb5-admin-server gettext-base && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN mkdir -p /etc/krb5kdc && \
+	cd /etc && \
+	ln -sf krb5kdc/krb5.conf krb5.conf
+
+ADD entrypoint.common.sh /bin/entrypoint.common.sh
+ADD entrypoint.kadmin.sh /bin/entrypoint.sh
+ADD etc/kerberos/* /usr/local/share/etc-templates/krb5kdc/
+
+EXPOSE 749
+
+ENTRYPOINT [ "/bin/entrypoint.sh" ]
+
+CMD [ "/usr/sbin/kadmind", "-nofork" ]
+

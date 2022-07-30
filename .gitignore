@@ -1,0 +1,5 @@
+html/
+initdb.d/
+.env
+.env.app
+

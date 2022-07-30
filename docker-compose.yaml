@@ -1,0 +1,116 @@
+version: "3.0"
+
+services:
+
+  kadmin:
+    build:
+      context: .
+      dockerfile: Dockerfile.kadmin
+    init: true
+    volumes:
+      - kdb:/var/lib/krb5kdc
+      - keytab:/etc/krb5keytab
+    hostname: kadmin
+    domainname: _docker
+    ports:
+      - "${KADMIN_PORT:-749}:749/tcp"
+      - "${KADMIN_PORT:-749}:749/udp"
+    environment:
+      - KRB_REALM
+      - KRB_ADMIN_PASSWORD
+      - KRB_MASTER_PASSWORD
+      - LDAP_HOSTNAME
+
+  kdc:
+    build:
+      context: .
+      dockerfile: Dockerfile.kdc
+    init: true
+    volumes:
+      - kdb:/var/lib/krb5kdc
+    hostname: kdc
+    domainname: _docker
+    ports:
+      - "${KDC_PORT:-88}:88/tcp"
+      - "${KDC_PORT:-88}:88/udp"
+    environment:
+      - KRB_REALM
+    depends_on:
+      - kadmin
+
+#  kprop:
+#    build:
+#      context: ./
+#    volumes:
+
+  saslauthd:
+    build:
+      context: .
+      dockerfile: Dockerfile.saslauthd
+    init: true
+    volumes:
+      - keytab:/etc/krb5keytab
+      - saslauthd:/var/run/saslauthd
+    hostname: saslauthd
+    domainname: _docker
+    environment:
+      - KRB_REALM
+    depends_on:
+      - kdc
+
+  slapd:
+    build:
+      context: .
+      dockerfile: Dockerfile.slapd
+    volumes:
+      - ldap:/var/lib/ldap
+      - keytab:/etc/krb5keytab
+      - saslauthd:/var/run/saslauthd
+      - ./etc/slapd/add-schema:/ldap-add-schema.d:ro
+    hostname: eqar-mba-ct
+    domainname: local
+    ports:
+      - "${LDAP_PORT:-389}:389/tcp"
+    environment:
+      - KRB_REALM
+      - LDAP_SUFFIX
+      - LDAP_HOSTNAME
+    depends_on:
+      - saslauthd
+      - kdc
+
+#  ldapcherry:
+#    build:
+#      context: ./ldapcherry
+#    volumes:
+#      - keytab:/etc/krb5keytab
+
+#  simplesamlphp:
+#    build:
+#      context: ./simplesamlphp
+#      args:
+#        PHP_TAG: ${PHP_TAG:-8-fpm}
+#        PHP_EXT: ${PHP_EXT:-}
+#        APT_GET: ${APT_GET:-}
+#    volumes:
+#      - ${HTML_ROOT:-./html}:/var/www/html
+#    environment:
+#      FOO: BAR
+
+#  web:
+#    image: nginx:${NGINX_TAG:-latest}
+#    depends_on:
+#      - simplesamlphp
+#      - ldapcherry
+#    ports:
+#      - "${WEB_PORT:-8080}:80"
+#    volumes:
+#      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+#      - ${HTML_ROOT:-./html}:/var/www/html:ro
+
+volumes:
+  kdb:
+  ldap:
+  keytab:
+  saslauthd:
+

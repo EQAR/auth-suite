@@ -1,0 +1,12 @@
+dn: ou=users,${LDAP_SUFFIX}
+ou: users
+description: Users
+objectClass: organizationalUnit
+
+dn: cn=admin,ou=users,${LDAP_SUFFIX}
+objectClass: simpleSecurityObject
+objectClass: organizationalRole
+cn: admin
+description: LDAP administrator
+userPassword: {SASL}admin/admin@${KRB_REALM}
+

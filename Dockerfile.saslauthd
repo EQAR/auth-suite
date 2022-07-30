@@ -1,0 +1,28 @@
+FROM ubuntu:latest
+
+ARG LC_ALL=C
+ARG DEBIAN_FRONTEND=noninteractive 
+
+# Install saslauthd
+RUN apt-get -y update && \
+	apt-get install -y libsasl2-modules-gssapi-mit sasl2-bin gettext-base && \
+	apt-get clean && \
+	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# add Kerberos config
+RUN mkdir -p /etc/krb5kdc && \
+	touch /etc/krb5kdc && \
+	cd /etc && \
+	ln -sf krb5kdc/krb5.conf krb5.conf
+ADD etc/kerberos/krb5.conf /usr/local/share/etc-templates/krb5kdc/
+
+# add sasl config
+ADD etc/slapd/sasl2-slapd.conf /usr/lib/sasl2/slapd.conf
+
+ADD entrypoint.common.sh /bin/entrypoint.common.sh
+ADD entrypoint.saslauthd.sh /bin/entrypoint.sh
+
+ENTRYPOINT [ "/bin/entrypoint.sh" ]
+
+CMD [ "/usr/sbin/saslauthd", "-d", "-a", "kerberos5", "-m", "/var/run/saslauthd" ]
+

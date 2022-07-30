@@ -1,0 +1,40 @@
+FROM ubuntu:latest
+
+ARG LC_ALL=C
+ARG DEBIAN_FRONTEND=noninteractive 
+
+# Install slapd
+RUN apt-get -y update && \
+	apt-get install -y slapd libsasl2-modules-gssapi-mit gettext-base && \
+	apt-get clean && \
+	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# empty the default configuration & create empty dirs
+RUN rm -rf /etc/ldap/slapd.d /var/lib/ldap && \
+	mkdir /etc/ldap/slapd.d /var/lib/ldap && \
+	chown -R openldap.openldap /etc/ldap/slapd.d /var/lib/ldap
+
+# add Kerberos config
+RUN mkdir -p /etc/krb5kdc && \
+	touch /etc/krb5kdc && \
+	cd /etc && \
+	ln -sf krb5kdc/krb5.conf krb5.conf
+
+# move sasl config to /etc
+RUN mkdir -p /etc/sasl2 && \
+	touch /etc/sasl2/slapd.conf && \
+	ln -sf /etc/sasl2/slapd.conf /usr/lib/sasl2/slapd.conf
+
+# add config templates
+ADD etc/kerberos/krb5.conf /usr/local/share/etc-templates/krb5kdc/
+ADD etc/slapd/config*.ldif /usr/local/share/etc-templates/ldap/
+ADD etc/slapd/base-data.ldif /usr/local/share/etc-templates/ldap/
+ADD etc/slapd/sasl2-slapd.conf /usr/local/share/etc-templates/sasl2/slapd.conf
+
+ADD entrypoint.common.sh /bin/entrypoint.common.sh
+ADD entrypoint.slapd.sh /bin/entrypoint.sh
+
+ENTRYPOINT [ "/bin/entrypoint.sh" ]
+
+CMD [ "/usr/sbin/slapd", "-d", "320", "-u", "openldap" ]
+
