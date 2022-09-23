@@ -1,12 +1,20 @@
-dn: ou=users,${LDAP_SUFFIX}
-ou: users
-description: Users
-objectClass: organizationalUnit
+dn: ${LDAP_SUFFIX}
+${LDAP_ROOT_ATTRIBUTE}: ${LDAP_ROOT_VALUE}
+description: LDAP root object
+objectClass: ${LDAP_OBJECTCLASS}
 
-dn: cn=admin,ou=users,${LDAP_SUFFIX}
-objectClass: simpleSecurityObject
-objectClass: organizationalRole
+dn: cn=admin,${LDAP_SUFFIX}
+objectClass: groupOfNames
 cn: admin
-description: LDAP administrator
-userPassword: {SASL}admin/admin@${KRB_REALM}
+description: LDAP administrators
+member: uid=${KRB_DEFAULT_ADMIN},${LDAP_SUFFIX}
+
+dn: uid=${KRB_DEFAULT_ADMIN},${LDAP_SUFFIX}
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+uid: ${KRB_DEFAULT_ADMIN}
+sn: Administrator
+cn: Administrator
+userPassword: {SASL}${KRB_DEFAULT_ADMIN}@${KRB_REALM}
 

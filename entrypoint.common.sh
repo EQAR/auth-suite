@@ -48,7 +48,11 @@ generate_config() {
     echo -n "Generating /etc files:"
     for f in $(cd /usr/local/share/etc-templates ; find . -type f | sed 's/^.\///') ; do
         echo -n " $f"
-        envsubst < "/usr/local/share/etc-templates/$f" > "/etc/$f"
+        if [ -z "$1" ]; then
+            envsubst < "/usr/local/share/etc-templates/$f" > "/etc/$f"
+        else
+            envsubst "$1" < "/usr/local/share/etc-templates/$f" > "/etc/$f"
+        fi
     done
     echo
 }

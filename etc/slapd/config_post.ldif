@@ -18,8 +18,7 @@ dn: olcDatabase={-1}frontend,cn=config
 objectClass: olcDatabaseConfig
 objectClass: olcFrontendConfig
 olcDatabase: {-1}frontend
-olcAccess: {0}to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=extern
- al,cn=auth manage by * break
+olcAccess: {0}to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break
 olcAccess: {1}to dn.exact="" by * read
 olcAccess: {2}to dn.base="cn=Subschema" by * read
 olcSizeLimit: 500
@@ -27,22 +26,21 @@ olcSizeLimit: 500
 dn: olcDatabase={0}config,cn=config
 objectClass: olcDatabaseConfig
 olcDatabase: {0}config
-olcAccess: {0}to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=extern
- al,cn=auth manage by * break
-olcRootDN: cn=admin,ou=users,${LDAP_SUFFIX}
+olcAccess: {0}to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break
+olcRootDN: cn=admin,${LDAP_SUFFIX}
 
 dn: olcDatabase={1}mdb,cn=config
 objectClass: olcDatabaseConfig
 objectClass: olcMdbConfig
 olcDatabase: {1}mdb
 olcDbDirectory: /var/lib/ldap
-olcSuffix: ou=users,${LDAP_SUFFIX}
-olcAccess: {0}to attrs=userPassword by self read by anonymous auth by * none
-olcAccess: {1}to attrs=cn,givenName,sn,mail,loginShell,gecos by self write b
- y * break
-olcAccess: {2}to * by * read
+olcSuffix: ${LDAP_SUFFIX}
+olcAccess: {0}to dn.sub="${LDAP_SUFFIX}" by group.exact="cn=admin,${LDAP_SUFFIX}" write by * break
+olcAccess: {1}to attrs=userPassword by self read by anonymous auth by * none
+olcAccess: {2}to attrs=cn,givenName,sn,mail,loginShell,gecos by self write by * break
+olcAccess: {3}to * by * read
 olcLastMod: TRUE
-olcRootDN: cn=admin,ou=users,${LDAP_SUFFIX}
+olcRootDN: cn=admin,${LDAP_SUFFIX}
 olcDbIndex: cn,uid eq
 olcDbIndex: entryUUID eq
 olcDbIndex: mail eq

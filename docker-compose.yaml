@@ -66,15 +66,13 @@ services:
       - ldap:/var/lib/ldap
       - keytab:/etc/krb5keytab
       - saslauthd:/var/run/saslauthd
-      - ./etc/slapd/add-schema:/ldap-add-schema.d:ro
-    hostname: eqar-mba-ct
-    domainname: local
+    hostname: ${LDAP_HOSTNAME:-slapd}
+    domainname: ${LDAP_DOMAINNAME:-_docker}
     ports:
       - "${LDAP_PORT:-389}:389/tcp"
     environment:
       - KRB_REALM
       - LDAP_SUFFIX
-      - LDAP_HOSTNAME
     depends_on:
       - saslauthd
       - kdc
