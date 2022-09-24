@@ -96,32 +96,39 @@ services:
       - slapd
       - kdc
 
-#  simplesamlphp:
-#    build:
-#      context: ./simplesamlphp
-#      args:
-#        PHP_TAG: ${PHP_TAG:-8-fpm}
-#        PHP_EXT: ${PHP_EXT:-}
-#        APT_GET: ${APT_GET:-}
-#    volumes:
-#      - ${HTML_ROOT:-./html}:/var/www/html
-#    environment:
-#      FOO: BAR
+  simplesamlphp:
+    build:
+      context: ./simplesamlphp
+      dockerfile: Dockerfile.php
+    volumes:
+      - samlcert:/var/lib/simplesamlphp/cert
+    environment:
+      - LDAP_SUFFIX
+      - "SSP_BASE_URL=${SSP_BASE_URL:-http://localhost:8080}"
+      - SSP_ADMIN_NAME
+      - SSP_ADMIN_EMAIL
+      - SSP_FROM_EMAIL
+      - SSP_ORG_NAME
+      - SSP_ORG_DISPLAY
+      - SSP_ORG_URL
+      - SSP_ADMIN_PASSWORD
+      - SSP_SECRET_SALT
+    depends_on:
+      - slapd
 
-#  web:
-#    image: nginx:${NGINX_TAG:-latest}
-#    depends_on:
-#      - simplesamlphp
-#      - ldapcherry
-#    ports:
-#      - "${WEB_PORT:-8080}:80"
-#    volumes:
-#      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-#      - ${HTML_ROOT:-./html}:/var/www/html:ro
+  web:
+    build:
+      context: ./simplesamlphp
+      dockerfile: Dockerfile.nginx
+    depends_on:
+      - simplesamlphp
+    ports:
+      - "${WEB_PORT:-8080}:80"
 
 volumes:
   kdb:
   ldap:
   keytab:
   saslauthd:
+  samlcert:
 
