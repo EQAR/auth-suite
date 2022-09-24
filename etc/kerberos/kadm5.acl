@@ -6,6 +6,5 @@
 # */admin *
 
 */admin@${KRB_REALM} *
-#HTTP/sso.eqar.eu@${KRB_REALM} ac
-ldapcherry@${KRB_REALM} acdim
+ldapcherry/ldapcherry._docker@${KRB_REALM} acdim
 
