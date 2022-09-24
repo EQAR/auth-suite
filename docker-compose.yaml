@@ -77,11 +77,24 @@ services:
       - saslauthd
       - kdc
 
-#  ldapcherry:
-#    build:
-#      context: ./ldapcherry
-#    volumes:
-#      - keytab:/etc/krb5keytab
+  ldapcherry:
+    build:
+      context: .
+      dockerfile: Dockerfile.ldapcherry
+    volumes:
+      - keytab:/etc/krb5keytab
+    hostname: ldapcherry
+    domainname: _docker
+    ports:
+      - "${LDAPCHERRY_PORT:-8389}:8389/tcp"
+    environment:
+      - KRB_REALM
+      - LDAP_SUFFIX
+      - LDAPCHERRY_URL
+      - LDAPCHERRY_MAILFROM
+    depends_on:
+      - slapd
+      - kdc
 
 #  simplesamlphp:
 #    build:

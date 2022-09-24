@@ -1,0 +1,206 @@
+first-name:
+    description: "First name of the user"
+    display_name: "First name"
+    search_displayed: True
+    type: string
+    weight: 10
+    self: True
+    backends:
+        ldap: givenName
+
+name:
+    description: "Last name of the user"
+    display_name: "Last name"
+    search_displayed: True
+    weight: 20
+    type: string
+    self: True
+    backends:
+        ldap: sn
+
+email:
+    description: "Email address"
+    display_name: "Email"
+    search_displayed: True
+    type: email
+    weight: 30
+    self: True
+    autofill: 
+        function: lcMail
+        args:
+            - $first-name
+            - $name
+            - '@eqar.eu'
+    backends:
+        ldap: mail
+
+password:
+    description: "Kerberos password"
+    display_name: "Password"
+    weight: 40
+    type: password
+    self: True
+    backends:
+        kerberos: password
+
+uid:
+    description: "Login name of the user"
+    display_name: "Username"
+    search_displayed: True
+    key: True
+    type: string
+    weight: 50
+    autofill: 
+        function: lcUid
+        args:
+            - $first-name
+            - $name
+    backends:
+        ldap: uid
+        kerberos: uid
+
+parent:
+    description: "DN of parent LDAP object"
+    display_name: "Organizational unit"
+    search_displayed: True
+    weight: 60
+    type: stringlist
+    immutable: True
+    values:
+        - ${LDAP_SUFFIX}
+    backends:
+        ldap: _parent_dn
+
+cn:
+    description: "First and last name (auto-generated)"
+    display_name: "Display name"
+    type: readonly
+    weight: 70
+    backends:
+        ldap: cn
+
+dn:
+    description: "DN of this LDAP object"
+    display_name: "LDAP"
+    weight: 80
+    type: readonly
+    backends:
+        ldap: _dn
+
+uuid:
+    description: "Generate Apple UID"
+    display_name: "UUID"
+    weight: 90
+    type: readonly
+    backends:
+        ldap: apple-generateduid
+
+krb-principal:
+    description: "Kerberos principal name"
+    display_name: "Principal"
+    weight: 100
+    type: readonly
+    self: True
+    backends:
+        kerberos: principal
+
+krb-last-pwd-change:
+    description: "Kerberos"
+    display_name: "Password last changed"
+    weight: 110
+    type: readonly
+    self: True
+    backends:
+        kerberos: last_pwd_change
+
+krb-last-success:
+    description: "Kerberos"
+    display_name: "Last good login"
+    weight: 120
+    type: readonly
+    self: True
+    backends:
+        kerberos: last_success
+
+krb-last-failure:
+    description: "Kerberos"
+    display_name: "Last failed login"
+    weight: 130
+    type: readonly
+    self: True
+    backends:
+        kerberos: last_failure
+
+krb-mod-date:
+    description: "Kerberos"
+    display_name: "Modification time"
+    weight: 140
+    type: readonly
+    self: True
+    backends:
+        kerberos: mod_date
+
+krb-mod-name:
+    description: "Kerberos"
+    display_name: "Modified by"
+    weight: 150
+    type: readonly
+    self: True
+    backends:
+        kerberos: mod_name
+
+#uidNumber:
+#    description: "User ID Number of the user"
+#    display_name: "UID Number"
+#    weight: 60
+#    type: int
+#    autofill: 
+#        function: lcUidNumber
+#        args:
+#            - $first-name
+#            - $name
+#            - '10000'
+#            - '40000'
+#    backends:
+#        ldap: uidNumber
+#gidNumber:
+#    description: "Group ID Number of the user"
+#    display_name: "GID Number"
+#    weight: 70
+#    type: int
+#    default: '10000'
+#    backends:
+#        ldap: gidNumber
+#shell:
+#    description: "Shell of the user"
+#    display_name: "Shell"
+#    weight: 80
+#    self: True
+#    type: stringlist
+#    values:
+#        - /bin/bash
+#        - /bin/zsh
+#        - /bin/sh
+#    backends:
+#        ldap: loginShell
+#home:
+#    description: "Home user path"
+#    display_name: "Home"
+#    weight: 90
+#    type: string
+#    autofill: 
+#        function: lcHomeDir
+#        args:
+#            - $first-name
+#            - $name
+#            - /home/
+#    backends:
+#        ldap: homeDirectory
+#logscript:
+#    description: "Windows login script"
+#    display_name: "Login script"
+#    weight: 100
+#    type: fix
+#    value: login1.bat
+#    backends:
+#        ad: scriptPath

@@ -1,0 +1,8 @@
+admins:
+    display_name: Admins
+    description: Administrators of the system
+    LC_admins: True
+    backends_groups:
+        ldap:
+            - cn=admin,${LDAP_SUFFIX}
+
