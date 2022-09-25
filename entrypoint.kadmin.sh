@@ -37,9 +37,9 @@ fi
 
 echo "Checking for required principals and keytabs:"
 # check if principals exist & generate keytabs
-check_principal_keytab host/saslauthd._docker saslauthd.keytab
+check_principal_keytab host/saslauthd saslauthd.keytab
 check_principal_keytab ldap/${LDAP_FQDN} slapd.keytab
-check_principal_keytab ldapcherry/ldapcherry._docker ldapcherry.keytab
+check_principal_keytab ldapcherry/ldapcherry ldapcherry.keytab
 
 exec "$@"
 

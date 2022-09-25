@@ -11,7 +11,6 @@ services:
       - kdb:/var/lib/krb5kdc
       - keytab:/etc/krb5keytab
     hostname: kadmin
-    domainname: _docker
     ports:
       - "${KADMIN_PORT:-749}:749/tcp"
       - "${KADMIN_PORT:-749}:749/udp"
@@ -29,7 +28,6 @@ services:
     volumes:
       - kdb:/var/lib/krb5kdc
     hostname: kdc
-    domainname: _docker
     ports:
       - "${KDC_PORT:-88}:88/tcp"
       - "${KDC_PORT:-88}:88/udp"
@@ -52,7 +50,6 @@ services:
       - keytab:/etc/krb5keytab
       - saslauthd:/var/run/saslauthd
     hostname: saslauthd
-    domainname: _docker
     environment:
       - KRB_REALM
     depends_on:
@@ -67,7 +64,7 @@ services:
       - keytab:/etc/krb5keytab
       - saslauthd:/var/run/saslauthd
     hostname: ${LDAP_HOSTNAME:-slapd}
-    domainname: ${LDAP_DOMAINNAME:-_docker}
+    domainname: ${LDAP_DOMAINNAME:-docker.lan}
     ports:
       - "${LDAP_PORT:-389}:389/tcp"
     environment:
@@ -84,7 +81,6 @@ services:
     volumes:
       - keytab:/etc/krb5keytab
     hostname: ldapcherry
-    domainname: _docker
     ports:
       - "${LDAPCHERRY_PORT:-8389}:8389/tcp"
     environment:

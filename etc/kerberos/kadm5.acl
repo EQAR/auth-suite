@@ -6,5 +6,5 @@
 # */admin *
 
 */admin@${KRB_REALM} *
-ldapcherry/ldapcherry._docker@${KRB_REALM} acdim
+ldapcherry/ldapcherry@${KRB_REALM} acdim
 
