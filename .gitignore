@@ -2,4 +2,5 @@ html/
 initdb.d/
 .env
 .env.app
+docker-compose.override.yaml
 

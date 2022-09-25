@@ -1,13 +1,11 @@
 dn: cn=config
 objectClass: olcGlobal
 cn: config
-olcArgsFile: /var/run/slapd/slapd.args
 olcAuthzRegexp: {0}uid=admin(,cn=admin)?,cn=(digest-md5|cram-md5),cn=auth cn=admin,${LDAP_SUFFIX}
 olcAuthzRegexp: {1}uid=([^,\/@]+)/admin(@${KRB_REALM})?,cn=gssapi,cn=auth cn=admin,${LDAP_SUFFIX}
-olcAuthzRegexp: {2}uid=([^,\/@]]+)(@${KRB_REALM})?,cn=gssapi,cn=auth ldap:///${LDAP_SUFFIX}??sub?(uid=$1)
+olcAuthzRegexp: {2}uid=([^,\/@]+)(@${KRB_REALM})?,cn=gssapi,cn=auth ldap:///${LDAP_SUFFIX}??sub?(uid=$1)
 olcAuthzRegexp: {3}gidNumber=[0-9]+\+uidNumber=([0-9]+),cn=peercred,cn=external,cn=auth ldap:///${LDAP_SUFFIX}??sub?(uidNumber=$1)
 olcLogLevel: none
-olcPasswordHash: {SSHA}
 olcPidFile: /var/run/slapd/slapd.pid
 olcToolThreads: 1
 
