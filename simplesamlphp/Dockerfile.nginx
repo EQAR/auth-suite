@@ -1,15 +1,12 @@
 # work starts here
-FROM nginx:latest
+FROM nginx:alpine
 
 # arguments
 ARG SIMPLE_SAML_PHP_VERSION=1.19.6
 ARG SIMPLE_SAML_PHP_HASH=834bb4a89d63d7498e77cceb49e01b919d1c0a6a3d38a992f905810dad424b7c
 
 # install wget
-RUN apt-get update && \
-    apt-get install -y wget ; \
-    apt-get clean ; \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apk add --no-cache wget
 
 # get SimpleSAMLphp
 RUN cd /tmp \

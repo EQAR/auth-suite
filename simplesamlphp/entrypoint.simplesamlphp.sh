@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # entrypoint.simplesamlphp.sh - generate cert for SAML if needed
 #

@@ -1,13 +1,7 @@
-FROM ubuntu:latest
-
-ARG LC_ALL=C
-ARG DEBIAN_FRONTEND=noninteractive 
+FROM alpine:latest
 
 # Install saslauthd
-RUN apt-get -y update && \
-	apt-get install -y libsasl2-modules-gssapi-mit sasl2-bin gettext-base && \
-	apt-get clean && \
-	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apk add --no-cache cyrus-sasl-gssapiv2 cyrus-sasl gettext
 
 # add Kerberos config
 RUN mkdir -p /etc/krb5kdc && \

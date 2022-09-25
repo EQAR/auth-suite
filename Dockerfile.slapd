@@ -1,7 +1,7 @@
 FROM ubuntu:latest
 
 ARG LC_ALL=C
-ARG DEBIAN_FRONTEND=noninteractive 
+ARG DEBIAN_FRONTEND=noninteractive
 
 # Install slapd
 RUN apt-get -y update && \
@@ -34,6 +34,9 @@ ADD etc/slapd/add-schema/* /ldap-add-schema.d/
 
 ADD entrypoint.common.sh /bin/entrypoint.common.sh
 ADD entrypoint.slapd.sh /bin/entrypoint.sh
+
+ENV KRB5_KTNAME=/etc/krb5keytab/slapd.keytab
+ENV KRB5_CONFIG=/etc/krb5.conf
 
 ENTRYPOINT [ "/bin/entrypoint.sh" ]
 

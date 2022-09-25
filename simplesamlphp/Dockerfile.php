@@ -1,12 +1,9 @@
 # work starts here
-FROM php:8-fpm
+FROM php:8-fpm-alpine
 
 # install Debian packagesa and required PHP extensions
-RUN apt-get update && \
-    apt-get install -y wget libldap2-dev ; \
-    apt-get clean ; \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ; \
-    docker-php-ext-install ldap
+RUN apk add --no-cache wget libldap openldap-dev \
+    && docker-php-ext-install ldap
 
 COPY getenv-docker.php /usr/local/lib/php
 

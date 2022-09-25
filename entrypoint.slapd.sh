@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 . /bin/entrypoint.common.sh
 
@@ -60,9 +60,6 @@ fi
 # fix LDAP database + saslauthd socket permissions
 chown -R openldap.openldap /etc/ldap/slapd.d /var/lib/ldap /etc/krb5keytab/slapd.keytab
 chgrp openldap /var/run/saslauthd
-
-# export variables
-export KRB5_KTNAME=/etc/krb5keytab/slapd.keytab
 
 exec "$@"
 
