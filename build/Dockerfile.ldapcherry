@@ -1,20 +1,25 @@
 FROM python:3-alpine
 
+ARG LDAPCHERRY_REPO=EQAR/ldapcherry
+ARG LDAPCHERRY_SOURCE=heads/master
+
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
-RUN mkdir -p /opt/ldapcherry
+
+RUN pip install --upgrade pip
+RUN apk add --no-cache build-base python3-dev krb5-dev cyrus-sasl-dev gettext openldap-dev wget
+
+RUN mkdir -p /opt/ldapcherry /tmp \
+    && cd /tmp \
+    && wget -O ldapcherry.tar.gz "https://github.com/${LDAPCHERRY_REPO}/archive/refs/${LDAPCHERRY_SOURCE}.tar.gz" \
+    && cd /opt/ldapcherry \
+    && tar xzf /tmp/ldapcherry.tar.gz --strip-components=1 \
+    && rm -f /tmp/ldapcherry.tar.gz
 
 WORKDIR /opt/ldapcherry
 
-RUN pip install --upgrade pip
-RUN apk add --no-cache build-base python3-dev krb5-dev cyrus-sasl-dev gettext openldap-dev
-
-ADD ldapcherry/requirements.txt /opt/ldapcherry
-
 RUN pip install -r requirements.txt
-
-ADD ldapcherry/ /opt/ldapcherry
 
 RUN pip install .
 

@@ -89,6 +89,8 @@ services:
       - LDAP_SUFFIX
       - LDAPCHERRY_URL
       - LDAPCHERRY_MAILFROM
+      - LDAPCHERRY_PARENT_DN
+      - LDAPCHERRY_ADMIN_GROUP_DN
     depends_on:
       - slapd
       - kdc

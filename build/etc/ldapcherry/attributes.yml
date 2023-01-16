@@ -25,12 +25,6 @@ email:
     type: email
     weight: 30
     self: True
-    autofill: 
-        function: lcMail
-        args:
-            - $first-name
-            - $name
-            - '@eqar.eu'
     backends:
         ldap: mail
 
@@ -66,8 +60,7 @@ parent:
     weight: 60
     type: stringlist
     immutable: True
-    values:
-        - ${LDAP_SUFFIX}
+    values: ${LDAPCHERRY_PARENT_DN}
     backends:
         ldap: _parent_dn
 
