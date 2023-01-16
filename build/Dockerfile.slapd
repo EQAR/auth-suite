@@ -30,7 +30,7 @@ ADD etc/kerberos/krb5.conf /usr/local/share/etc-templates/krb5kdc/
 ADD etc/slapd/config*.ldif /usr/local/share/etc-templates/ldap/
 ADD etc/slapd/base-data.ldif /usr/local/share/etc-templates/ldap/
 ADD etc/slapd/sasl2-slapd.conf /usr/local/share/etc-templates/sasl2/slapd.conf
-ADD etc/slapd/add-schema/* /ldap-add-schema.d/
+ADD etc/slapd/add-schema/* /usr/local/share/ldap-schema.d/
 
 ADD entrypoint.common.sh /bin/entrypoint.common.sh
 ADD entrypoint.slapd.sh /bin/entrypoint.sh

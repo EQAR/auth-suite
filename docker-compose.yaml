@@ -64,6 +64,7 @@ services:
       - ldap:/var/lib/ldap
       - keytab:/etc/krb5keytab
       - saslauthd:/var/run/saslauthd
+      - slapdolc:/etc/ldap/slapd.d
     hostname: ${LDAP_HOSTNAME:-slapd}
     domainname: ${LDAP_DOMAINNAME:-docker.lan}
     ports:
@@ -127,6 +128,7 @@ services:
 volumes:
   kdb:
   ldap:
+  slapdolc:
   keytab:
   saslauthd:
   samlcert:
