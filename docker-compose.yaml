@@ -18,7 +18,7 @@ services:
       - KRB_REALM
       - KRB_ADMIN_PASSWORD
       - KRB_MASTER_PASSWORD
-      - "LDAP_FQDN=${LDAP_HOSTNAME:-slapd}.${LDAP_DOMAINNAME:-_docker}"
+      - "LDAP_FQDN=${LDAP_HOSTNAME:-slapd}.${LDAP_DOMAINNAME:-docker.lan}"
 
   kdc:
     build:

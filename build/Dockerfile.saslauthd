@@ -16,6 +16,9 @@ ADD etc/slapd/sasl2-slapd.conf /usr/lib/sasl2/slapd.conf
 ADD entrypoint.common.sh /bin/entrypoint.common.sh
 ADD entrypoint.saslauthd.sh /bin/entrypoint.sh
 
+ENV KRB5_KTNAME=/etc/krb5keytab/saslauthd.keytab
+ENV KRB5_CONFIG=/etc/krb5kdc/krb5.conf
+
 ENTRYPOINT [ "/bin/entrypoint.sh" ]
 
 CMD [ "/usr/sbin/saslauthd", "-d", "-a", "kerberos5", "-m", "/var/run/saslauthd" ]

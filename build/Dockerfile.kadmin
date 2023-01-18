@@ -1,7 +1,6 @@
 FROM alpine
 
 ARG LC_ALL=C
-ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apk add --no-cache krb5-server gettext
 

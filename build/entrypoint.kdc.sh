@@ -6,9 +6,9 @@
 check_if_realm_in_env
 generate_config
 
-# if needed, wait for some time so kadmin can initialise the DB
-MAXWAIT=30
-INTERVAL=5
+# if needed, wait for some time so kadmin (or kpropd) can initialise the DB
+MAXWAIT=${KRB_MAXWAIT:-1800}
+INTERVAL=15
 WAITED=0
 while [ ! -f /var/lib/krb5kdc/principal ]; do
     if [ $WAITED -ge $MAXWAIT ]; then
@@ -17,7 +17,7 @@ while [ ! -f /var/lib/krb5kdc/principal ]; do
     fi
     echo "Kerberos database not initialised yet, sleeping $INTERVAL seconds..."
     sleep $INTERVAL
-    WAITED=$[WAITED+INTERVAL]
+    WAITED=$(( WAITED+INTERVAL ))
 done
 
 exec "$@"
