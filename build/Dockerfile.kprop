@@ -1,0 +1,24 @@
+FROM alpine
+
+ARG LC_ALL=C
+
+RUN apk add --no-cache krb5-server gettext
+
+RUN mkdir -p /etc/krb5kdc && \
+	touch /etc/krb5kdc && \
+	cd /etc && \
+	ln -sf krb5kdc/krb5.conf krb5.conf
+
+ADD entrypoint.common.sh /bin/entrypoint.common.sh
+ADD entrypoint.kprop.sh /bin/entrypoint.sh
+ADD do-kprop.sh /usr/sbin
+ADD etc/kerberos/* /usr/local/share/etc-templates/krb5kdc/
+
+ENV KRB5_CONFIG=/etc/krb5kdc/krb5.conf
+ENV KRB5_KDC_PROFILE=/etc/krb5kdc/kdc.conf
+ENV KRB5_KTNAME=/etc/krb5keytab/kprop.keytab
+
+ENTRYPOINT [ "/bin/entrypoint.sh" ]
+
+CMD [ "crond", "-f", "-d6" ]
+

@@ -40,6 +40,11 @@ echo "Checking for required principals and keytabs:"
 check_principal_keytab host/saslauthd saslauthd.keytab
 check_principal_keytab ldap/${LDAP_FQDN} slapd.keytab
 check_principal_keytab ldapcherry/ldapcherry ldapcherry.keytab
+check_principal_keytab host/kprop kprop.keytab
+for replica in ${KPROP_REPLICAS} ; do
+    mkdir -p "/etc/krb5keytab/${replica}"
+    check_principal_keytab "host/${replica}" "${replica}/kpropd.keytab"
+done
 
 exec "$@"
 

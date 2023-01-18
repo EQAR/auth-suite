@@ -3,6 +3,9 @@ version: "3.0"
 services:
 
   kadmin:
+    profiles:
+      - solo
+      - main
     build:
       context: ./build
       dockerfile: Dockerfile.kadmin
@@ -18,9 +21,14 @@ services:
       - KRB_REALM
       - KRB_ADMIN_PASSWORD
       - KRB_MASTER_PASSWORD
+      - KPROP_REPLICAS
       - "LDAP_FQDN=${LDAP_HOSTNAME:-slapd}.${LDAP_DOMAINNAME:-docker.lan}"
 
   kdc:
+    profiles:
+      - solo
+      - main
+      - replica
     build:
       context: ./build
       dockerfile: Dockerfile.kdc
@@ -33,16 +41,47 @@ services:
       - "${KDC_PORT:-88}:88/udp"
     environment:
       - KRB_REALM
+
+  kprop:
+    profiles:
+      - main
+    build:
+      context: ./build
+      dockerfile: Dockerfile.kprop
+    init: true
+    volumes:
+      - kdb:/var/lib/krb5kdc
+      - keytab:/etc/krb5keytab
+    hostname: kprop
+    environment:
+      - KRB_REALM
+      - KPROP_CRON
+      - KPROP_REPLICAS
     depends_on:
       - kadmin
 
-#  kprop:
-#    build:
-#      context: ./build
-#      dockerfile: Dockerfile.kprop
-#    volumes:
+  kpropd:
+    profiles:
+      - replica
+    build:
+      context: ./build
+      dockerfile: Dockerfile.kpropd
+    init: true
+    volumes:
+      - kdb:/var/lib/krb5kdc
+      - keytab:/etc/krb5keytab
+    hostname: ${KPROPD_HOSTNAME:-kpropd}
+    domainname: ${KPROPD_DOMAINNAME:-docker.lan}
+    ports:
+      - "${KPROPD_PORT:-754}:754/tcp"
+    environment:
+      - KRB_REALM
 
   saslauthd:
+    profiles:
+      - solo
+      - main
+      - replica
     build:
       context: ./build
       dockerfile: Dockerfile.saslauthd
@@ -57,6 +96,10 @@ services:
       - kdc
 
   slapd:
+    profiles:
+      - solo
+      - main
+      - replica
     build:
       context: ./build
       dockerfile: Dockerfile.slapd
@@ -77,6 +120,9 @@ services:
       - kdc
 
   ldapcherry:
+    profiles:
+      - solo
+      - main
     build:
       context: ./build
       dockerfile: Dockerfile.ldapcherry
@@ -97,6 +143,9 @@ services:
       - kdc
 
   simplesamlphp:
+    profiles:
+      - solo
+      - main
     build:
       context: ./simplesamlphp
       dockerfile: Dockerfile.php
@@ -117,6 +166,9 @@ services:
       - slapd
 
   web:
+    profiles:
+      - solo
+      - main
     build:
       context: ./simplesamlphp
       dockerfile: Dockerfile.nginx
