@@ -41,6 +41,7 @@ services:
       - "${KDC_PORT:-88}:88/udp"
     environment:
       - KRB_REALM
+      - KRB_MAXWAIT
 
   kprop:
     profiles:
@@ -57,6 +58,7 @@ services:
       - KRB_REALM
       - KPROP_CRON
       - KPROP_REPLICAS
+      - KRB_MAXWAIT
     depends_on:
       - kadmin
 

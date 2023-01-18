@@ -69,3 +69,38 @@ check_principal_keytab() {
     fi
 }
 
+wait_for_file() {
+    # wait until a file exists
+    WAITFOR="$1"
+    MAXWAIT="${2:-600}"
+    INTERVAL="${3:-5}"
+    WAITED=0
+    while [ ! -f "${WAITFOR}" ]; do
+        if [ $WAITED -ge $MAXWAIT ]; then
+            echo "FATAL: file not found after $MAXWAIT seconds, quitting."
+            exit 1
+        fi
+        echo "Waiting for ${WAITFOR}, sleeping ${INTERVAL}s, timeout in $((MAXWAIT-WAITED))s"
+        sleep $INTERVAL
+        WAITED=$(( WAITED+INTERVAL ))
+    done
+}
+
+wait_for_host() {
+    # wait until a host:port is listening
+    WAITHOST="$1"
+    WAITPORT="$2"
+    MAXWAIT="${3:-600}"
+    INTERVAL="${4:-5}"
+    TIMEOUT="${5:-$INTERVAL}"
+    WAITED=0
+    until nc -w ${TIMEOUT} -z ${WAITHOST} ${WAITPORT} ; do
+        if [ $WAITED -ge $MAXWAIT ]; then
+            echo "FATAL: host not reachable after $MAXWAIT seconds, quitting."
+            exit 1
+        fi
+        echo "Waiting for ${WAITHOST}:${WAITPORT}, sleeping ${INTERVAL}s, timeout in $((MAXWAIT-WAITED))s"
+        sleep $INTERVAL
+        WAITED=$(( WAITED+INTERVAL ))
+    done
+}
