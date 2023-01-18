@@ -1,8 +1,7 @@
-html/
+config/
 initdb.d/
 initolc.d/
 initschema.d/
 .env
-.env.app
 docker-compose.override.yaml
 
