@@ -133,11 +133,15 @@ services:
       - "${LDAPCHERRY_PORT:-8389}:8389/tcp"
     environment:
       - KRB_REALM
+      - REALM_NAME
       - LDAP_SUFFIX
       - LDAPCHERRY_URL
       - LDAPCHERRY_MAILFROM
       - LDAPCHERRY_PARENT_DN
       - LDAPCHERRY_ADMIN_GROUP_DN
+      - LDAPCHERRY_LOGLEVEL
+      - SMTP_HOST
+      - SMTP_PORT
     depends_on:
       - slapd
       - kdc

@@ -8,7 +8,15 @@ ENV PYTHONDONTWRITEBYTECODE 1
 
 
 RUN pip install --upgrade pip
-RUN apk add --no-cache build-base python3-dev krb5-dev cyrus-sasl-dev gettext openldap-dev wget
+RUN apk add --no-cache \
+    build-base \
+    python3-dev \
+    krb5-dev \
+    cyrus-sasl-dev \
+    gettext \
+    openldap-dev \
+    wget \
+    msmtp
 
 RUN mkdir -p /opt/ldapcherry /tmp \
     && cd /tmp \
@@ -31,6 +39,7 @@ RUN mkdir -p /etc/ldapcherry && \
 
 ADD etc/kerberos/krb5.conf /usr/local/share/etc-templates/krb5kdc/
 ADD etc/ldapcherry/* /usr/local/share/etc-templates/ldapcherry/
+ADD etc/msmtprc /usr/local/share/etc-templates/
 
 ADD entrypoint.common.sh /bin/entrypoint.common.sh
 ADD entrypoint.ldapcherry.sh /bin/entrypoint.sh
