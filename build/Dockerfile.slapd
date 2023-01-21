@@ -7,6 +7,7 @@ RUN apk add --no-cache \
 	openldap-back-mdb \
 	openldap-overlay-syncprov \
 	cyrus-sasl-gssapiv2 \
+	cyrus-sasl \
 	gettext
 
 # empty the default configuration & create empty dirs
@@ -24,6 +25,9 @@ RUN mkdir -p /etc/krb5kdc && \
 RUN mkdir -p /etc/sasl2 && \
 	touch /etc/sasl2/slapd.conf && \
 	ln -sf /etc/sasl2/slapd.conf /usr/lib/sasl2/slapd.conf
+
+RUN mkdir -p /var/run/saslauthd && \
+	chgrp ldap /var/run/saslauthd
 
 # add config templates
 ADD etc/kerberos/krb5.conf /usr/local/share/etc-templates/krb5kdc/

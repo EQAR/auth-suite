@@ -93,16 +93,8 @@ if [ ! -f /var/lib/openldap/data.mdb ] && [ -z "${LDAP_SYNCREPL_PROVIDER}" ]; th
     fi
 fi
 
-# fix LDAP database + saslauthd socket permissions
-chown -R ldap.ldap \
-    /etc/openldap/slapd.d \
-    /var/lib/openldap \
-    /etc/krb5keytab/slapd.keytab \
-    /var/run/slapd
-
-chgrp ldap /var/run/saslauthd
-
 # wait for KDC to be up
+# (KDC, in turn, waits for kadmin on main or for kpropd on replica)
 wait_for_host kdc 88
 
 # check for keytab
@@ -119,6 +111,17 @@ if [ ! -f /etc/krb5keytab/slapd.keytab ]; then
     fi
 fi
 
+# fix LDAP database + saslauthd socket permissions
+chown -R ldap.ldap \
+    /etc/openldap/slapd.d \
+    /var/lib/openldap \
+    /var/run/slapd
+chgrp -R ldap \
+    /var/run/saslauthd \
+    /etc/krb5keytab/slapd.keytab
+chmod 0770 /var/run/saslauthd
+chmod 0640 /etc/krb5keytab/slapd.keytab
+
 # replica needs to get and periodically renew a ticket to authenticate to main slapd
 if [ -n "${LDAP_SYNCREPL_PROVIDER}" ]; then
     su -s /bin/sh -c "kinit -k -t /etc/krb5keytab/slapd.keytab ldap/${MY_FQDN}" ldap || echo "ERROR: kinit failed." 1>&2
@@ -127,6 +130,9 @@ if [ -n "${LDAP_SYNCREPL_PROVIDER}" ]; then
     echo "${LDAP_KINIT_CRON} kinit -k -t /etc/krb5keytab/slapd.keytab ldap/${MY_FQDN}" | crontab -u ldap -
     crond -f -d6 &
 fi
+
+# start saslauthd
+/usr/sbin/saslauthd -d -a kerberos5 -m /var/run/saslauthd &
 
 exec "$@"
 

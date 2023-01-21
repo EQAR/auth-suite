@@ -91,25 +91,6 @@ services:
       - "LDAP_HOSTNAME=${LDAP_HOSTNAME:-slapd}"
       - LDAP_SYNCREPL_PROVIDER
 
-  saslauthd:
-    profiles:
-      - solo
-      - main
-      - replica
-    build:
-      context: ./build
-      dockerfile: Dockerfile.saslauthd
-    init: true
-    volumes:
-      - keytab:/etc/krb5keytab
-      - saslauthd:/var/run/saslauthd
-    hostname: saslauthd
-    environment:
-      - KRB_REALM
-      - KRB_DOMAIN_NAME
-    depends_on:
-      - kdc
-
   slapd:
     profiles:
       - solo
@@ -121,7 +102,6 @@ services:
     volumes:
       - ldap:/var/lib/openldap
       - keytab:/etc/krb5keytab
-      - saslauthd:/var/run/saslauthd
       - slapdolc:/etc/openldap/slapd.d
     hostname: ${LDAP_HOSTNAME:-slapd}
     ports:
@@ -135,7 +115,6 @@ services:
       - LDAP_SYNCREPL_PROVIDER
       - LDAP_SYNCREPL_PROVIDER_PORT
     depends_on:
-      - saslauthd
       - kdc
 
   ldapcherry:
@@ -208,6 +187,5 @@ volumes:
   ldap:
   slapdolc:
   keytab:
-  saslauthd:
   samlcert:
 

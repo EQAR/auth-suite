@@ -37,8 +37,8 @@ fi
 
 echo "Checking for required principals and keytabs:"
 # check if principals exist & generate keytabs
-check_principal_keytab host/saslauthd saslauthd.keytab
 check_principal_keytab ldap/${LDAP_HOSTNAME} slapd.keytab
+check_principal_keytab host/${LDAP_HOSTNAME} slapd.keytab
 check_principal_keytab ldapcherry/ldapcherry ldapcherry.keytab
 check_principal_keytab host/kprop kprop.keytab
 for replica in ${KPROP_REPLICAS} ; do
@@ -48,6 +48,7 @@ done
 for replica in ${LDAP_REPLICAS} ; do
     mkdir -p "/etc/krb5keytab/${replica}"
     check_principal_keytab "ldap/${replica}" "${replica}/slapd.keytab"
+    check_principal_keytab "host/${replica}" "${replica}/slapd.keytab"
 done
 
 exec "$@"
