@@ -21,8 +21,8 @@ else
     echo "Error: no database present and required files not in /initdb.d."
     echo
     echo "Files to mount into /initdb.d:"
-    echo "- krb5_stash  : stash file from primary KDC/kadmin instance"
-    echo "- krb5.keytab : keytab for this replica"
+    echo "- krb5_stash    : stash file from primary KDC/kadmin instance"
+    echo "- kpropd.keytab : keytab for this replica"
     echo
     exit 10
 fi

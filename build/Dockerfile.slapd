@@ -1,18 +1,18 @@
-FROM ubuntu:latest
-
-ARG LC_ALL=C
-ARG DEBIAN_FRONTEND=noninteractive
+FROM alpine
 
 # Install slapd
-RUN apt-get -y update && \
-	apt-get install -y slapd libsasl2-modules-gssapi-mit gettext-base && \
-	apt-get clean && \
-	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apk add --no-cache \
+	krb5 \
+	openldap \
+	openldap-back-mdb \
+	openldap-overlay-syncprov \
+	cyrus-sasl-gssapiv2 \
+	gettext
 
 # empty the default configuration & create empty dirs
-RUN rm -rf /etc/ldap/slapd.d /var/lib/ldap && \
-	mkdir /etc/ldap/slapd.d /var/lib/ldap && \
-	chown -R openldap.openldap /etc/ldap/slapd.d /var/lib/ldap
+RUN rm -rf /etc/openldap/slapd.d /var/lib/openldap \
+	&& mkdir /etc/openldap/slapd.d /var/lib/openldap /var/run/slapd \
+	&& chown -R ldap.ldap /etc/openldap/slapd.d /var/lib/openldap /var/run/slapd
 
 # add Kerberos config
 RUN mkdir -p /etc/krb5kdc && \
@@ -27,8 +27,8 @@ RUN mkdir -p /etc/sasl2 && \
 
 # add config templates
 ADD etc/kerberos/krb5.conf /usr/local/share/etc-templates/krb5kdc/
-ADD etc/slapd/config*.ldif /usr/local/share/etc-templates/ldap/
-ADD etc/slapd/base-data.ldif /usr/local/share/etc-templates/ldap/
+ADD etc/slapd/config*.ldif /usr/local/share/etc-templates/openldap/
+ADD etc/slapd/base-data.ldif /usr/local/share/etc-templates/openldap/
 ADD etc/slapd/sasl2-slapd.conf /usr/local/share/etc-templates/sasl2/slapd.conf
 ADD etc/slapd/add-schema/* /usr/local/share/ldap-schema.d/
 
@@ -40,5 +40,5 @@ ENV KRB5_CONFIG=/etc/krb5.conf
 
 ENTRYPOINT [ "/bin/entrypoint.sh" ]
 
-CMD [ "/usr/sbin/slapd", "-d", "320", "-u", "openldap" ]
+CMD [ "/usr/sbin/slapd", "-d", "320", "-u", "ldap" ]
 

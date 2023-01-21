@@ -19,10 +19,11 @@ services:
       - "${KADMIN_PORT:-749}:749/udp"
     environment:
       - KRB_REALM
+      - KRB_DOMAIN_NAME
       - KRB_ADMIN_PASSWORD
       - KRB_MASTER_PASSWORD
       - KPROP_REPLICAS
-      - "LDAP_FQDN=${LDAP_HOSTNAME:-slapd}.${LDAP_DOMAINNAME:-docker.lan}"
+      - "LDAP_HOSTNAME=${LDAP_HOSTNAME:-slapd}"
 
   kdc:
     profiles:
@@ -41,7 +42,10 @@ services:
       - "${KDC_PORT:-88}:88/udp"
     environment:
       - KRB_REALM
+      - KRB_DOMAIN_NAME
       - KRB_MAXWAIT
+      - KPROP_REPLICAS
+      - "LDAP_HOSTNAME=${LDAP_HOSTNAME:-slapd}"
 
   kprop:
     profiles:
@@ -56,9 +60,11 @@ services:
     hostname: kprop
     environment:
       - KRB_REALM
+      - KRB_DOMAIN_NAME
+      - KRB_MAXWAIT
       - KPROP_CRON
       - KPROP_REPLICAS
-      - KRB_MAXWAIT
+      - "LDAP_HOSTNAME=${LDAP_HOSTNAME:-slapd}"
     depends_on:
       - kadmin
 
@@ -73,11 +79,13 @@ services:
       - kdb:/var/lib/krb5kdc
       - keytab:/etc/krb5keytab
     hostname: ${KPROPD_HOSTNAME:-kpropd}
-    domainname: ${KPROPD_DOMAINNAME:-docker.lan}
     ports:
       - "${KPROPD_PORT:-754}:754/tcp"
     environment:
       - KRB_REALM
+      - KRB_DOMAIN_NAME
+      - "KPROPD_HOSTNAME=${KPROPD_HOSTNAME:-kpropd}"
+      - "LDAP_HOSTNAME=${LDAP_HOSTNAME:-slapd}"
 
   saslauthd:
     profiles:
@@ -94,6 +102,7 @@ services:
     hostname: saslauthd
     environment:
       - KRB_REALM
+      - KRB_DOMAIN_NAME
     depends_on:
       - kdc
 
@@ -106,17 +115,18 @@ services:
       context: ./build
       dockerfile: Dockerfile.slapd
     volumes:
-      - ldap:/var/lib/ldap
+      - ldap:/var/lib/openldap
       - keytab:/etc/krb5keytab
       - saslauthd:/var/run/saslauthd
-      - slapdolc:/etc/ldap/slapd.d
+      - slapdolc:/etc/openldap/slapd.d
     hostname: ${LDAP_HOSTNAME:-slapd}
-    domainname: ${LDAP_DOMAINNAME:-docker.lan}
     ports:
       - "${LDAP_PORT:-389}:389/tcp"
     environment:
       - KRB_REALM
+      - KRB_DOMAIN_NAME
       - LDAP_SUFFIX
+      - "LDAP_HOSTNAME=${LDAP_HOSTNAME:-slapd}"
     depends_on:
       - saslauthd
       - kdc
@@ -136,8 +146,10 @@ services:
       - "${LDAPCHERRY_PORT:-8389}:8389/tcp"
     environment:
       - KRB_REALM
+      - KRB_DOMAIN_NAME
       - REALM_NAME
       - LDAP_SUFFIX
+      - "LDAP_HOSTNAME=${LDAP_HOSTNAME:-slapd}"
       - LDAPCHERRY_URL
       - LDAPCHERRY_MAILFROM
       - LDAPCHERRY_PARENT_DN

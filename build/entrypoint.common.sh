@@ -56,6 +56,13 @@ generate_config() {
         fi
     done
     echo
+    # add hostnames -> real mapping to krb5.conf
+    (
+        echo ; echo "[domain_realm]"
+        for host in ${KRB_DOMAIN_NAME} ${LDAP_HOSTNAME} ${KPROPD_HOSTNAME} ${LDAP_REPLICAS} ${KPROP_REPLICAS} ${LDAP_SYNCREPL_PROVIDER} ; do
+            echo "  ${host} = ${KRB_REALM}"
+        done
+    ) >> /etc/krb5kdc/krb5.conf
 }
 
 check_principal_keytab() {
