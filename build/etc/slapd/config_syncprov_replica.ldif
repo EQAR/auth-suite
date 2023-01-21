@@ -1,0 +1,14 @@
+dn: olcDatabase={1}mdb,cn=config
+changetype: modify
+add: olcSyncrepl
+olcSyncrepl: {0}rid=001
+  provider=ldap://${LDAP_SYNCREPL_PROVIDER}:${LDAP_SYNCREPL_PROVIDER_PORT}
+  bindmethod=sasl
+  saslmech=gssapi
+  authcid=ldap/${MY_FQDN}@${KRB_REALM}
+  searchbase="${LDAP_SUFFIX}"
+  scope=sub
+  schemachecking=off
+  type=refreshAndPersist retry="60 10 300 5 3600 +"
+-
+

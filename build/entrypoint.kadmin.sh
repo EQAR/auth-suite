@@ -45,6 +45,10 @@ for replica in ${KPROP_REPLICAS} ; do
     mkdir -p "/etc/krb5keytab/${replica}"
     check_principal_keytab "host/${replica}" "${replica}/kpropd.keytab"
 done
+for replica in ${LDAP_REPLICAS} ; do
+    mkdir -p "/etc/krb5keytab/${replica}"
+    check_principal_keytab "ldap/${replica}" "${replica}/slapd.keytab"
+done
 
 exec "$@"
 

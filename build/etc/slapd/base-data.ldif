@@ -18,3 +18,8 @@ sn: Administrator
 cn: Administrator
 userPassword: {SASL}${KRB_DEFAULT_ADMIN}@${KRB_REALM}
 
+dn: cn=syncrepl,${LDAP_SUFFIX}
+objectClass: device
+cn: syncrepl
+description: LDAP syncrepl client
+

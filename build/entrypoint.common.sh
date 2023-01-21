@@ -4,7 +4,6 @@
 
 # configuration defaults (because envsubst doesn't support default values)
 set -a
-KRB_KDC_PORTS="${KRB_KDC_PORTS:-750,88}"
 KRB_DEFAULT_PRINCIPAL_FLAGS="${KRB_DEFAULT_PRINCIPAL_FLAGS:-+preauth}"
 KRB_MAX_LIFE="${KRB_MAX_LIFE:-10h 0m 0s}"
 KRB_MAX_RENEWABLE_LIFE="${KRB_MAX_RENEWABLE_LIFE:-7d 0h 0m 0s}"
@@ -12,6 +11,10 @@ KRB_FORWARDABLE="${KRB_FORWARDABLE:-true}"
 KRB_PROXIABLE="${KRB_PROXIABLE:-true}"
 KRB_DEFAULT_ADMIN="${KRB_DEFAULT_ADMIN:-admin}"
 REALM_NAME="${REALM_NAME:-$KRB_REALM}"
+KPROP_CRON="${KPROP_CRON:-*/10 * * * *}"
+LDAP_KINIT_CRON="${LDAP_KINIT_CRON:-0 */6 * * *}"
+LDAP_SYNCREPL_PROVIDER_PORT="${LDAP_SYNCREPL_PROVIDER_PORT:-389}"
+MY_FQDN="$(hostname -f)"
 set +a
 
 # helper: generate random password
@@ -52,7 +55,11 @@ generate_config() {
         if [ -z "$1" ]; then
             envsubst < "/usr/local/share/etc-templates/$f" > "/etc/$f"
         else
-            envsubst "$1" < "/usr/local/share/etc-templates/$f" > "/etc/$f"
+            vars_to_subst=""
+            for var in $@ ; do
+                vars_to_subst="$vars_to_subst \$$var"
+            done
+            envsubst "$vars_to_subst" < "/usr/local/share/etc-templates/$f" > "/etc/$f"
         fi
     done
     echo

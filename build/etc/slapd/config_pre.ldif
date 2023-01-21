@@ -3,8 +3,9 @@ objectClass: olcGlobal
 cn: config
 olcAuthzRegexp: {0}uid=admin(,cn=admin)?,cn=(digest-md5|cram-md5),cn=auth cn=admin,${LDAP_SUFFIX}
 olcAuthzRegexp: {1}uid=([^,\/@]+)/admin(@${KRB_REALM})?,cn=gssapi,cn=auth cn=admin,${LDAP_SUFFIX}
-olcAuthzRegexp: {2}uid=([^,\/@]+)(@${KRB_REALM})?,cn=gssapi,cn=auth ldap:///${LDAP_SUFFIX}??sub?(uid=$1)
-olcAuthzRegexp: {3}gidNumber=[0-9]+\+uidNumber=([0-9]+),cn=peercred,cn=external,cn=auth ldap:///${LDAP_SUFFIX}??sub?(uidNumber=$1)
+olcAuthzRegexp: {2}uid=ldap/([^,\/@]+)(@${KRB_REALM})?,cn=gssapi,cn=auth cn=syncrepl,${LDAP_SUFFIX}
+olcAuthzRegexp: {3}uid=([^,\/@]+)(@${KRB_REALM})?,cn=gssapi,cn=auth ldap:///${LDAP_SUFFIX}??sub?(uid=$1)
+olcAuthzRegexp: {4}gidNumber=[0-9]+\+uidNumber=([0-9]+),cn=peercred,cn=external,cn=auth ldap:///${LDAP_SUFFIX}??sub?(uidNumber=$1)
 olcLogLevel: none
 olcPidFile: /var/run/slapd/slapd.pid
 olcToolThreads: 1

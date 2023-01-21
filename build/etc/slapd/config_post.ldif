@@ -36,7 +36,7 @@ olcDatabase: {1}mdb
 olcDbDirectory: /var/lib/openldap
 olcSuffix: ${LDAP_SUFFIX}
 olcAccess: {0}to dn.sub="${LDAP_SUFFIX}" by group.exact="cn=admin,${LDAP_SUFFIX}" write by * break
-olcAccess: {1}to attrs=userPassword by self read by anonymous auth by * none
+olcAccess: {1}to attrs=userPassword by self read by dn.exact="cn=syncrepl,${LDAP_SUFFIX}" read by anonymous auth by * none
 olcAccess: {2}to attrs=cn,givenName,sn,mail,loginShell,gecos by self write by * break
 olcAccess: {3}to * by * read
 olcLastMod: TRUE

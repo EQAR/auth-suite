@@ -24,6 +24,7 @@ services:
       - KRB_MASTER_PASSWORD
       - KPROP_REPLICAS
       - "LDAP_HOSTNAME=${LDAP_HOSTNAME:-slapd}"
+      - LDAP_REPLICAS
 
   kdc:
     profiles:
@@ -46,6 +47,7 @@ services:
       - KRB_MAXWAIT
       - KPROP_REPLICAS
       - "LDAP_HOSTNAME=${LDAP_HOSTNAME:-slapd}"
+      - LDAP_REPLICAS
 
   kprop:
     profiles:
@@ -65,6 +67,7 @@ services:
       - KPROP_CRON
       - KPROP_REPLICAS
       - "LDAP_HOSTNAME=${LDAP_HOSTNAME:-slapd}"
+      - LDAP_REPLICAS
     depends_on:
       - kadmin
 
@@ -86,6 +89,7 @@ services:
       - KRB_DOMAIN_NAME
       - "KPROPD_HOSTNAME=${KPROPD_HOSTNAME:-kpropd}"
       - "LDAP_HOSTNAME=${LDAP_HOSTNAME:-slapd}"
+      - LDAP_SYNCREPL_PROVIDER
 
   saslauthd:
     profiles:
@@ -127,6 +131,9 @@ services:
       - KRB_DOMAIN_NAME
       - LDAP_SUFFIX
       - "LDAP_HOSTNAME=${LDAP_HOSTNAME:-slapd}"
+      - LDAP_REPLICAS
+      - LDAP_SYNCREPL_PROVIDER
+      - LDAP_SYNCREPL_PROVIDER_PORT
     depends_on:
       - saslauthd
       - kdc
