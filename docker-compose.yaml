@@ -1,5 +1,3 @@
-version: "3.0"
-
 services:
 
   kadmin:
@@ -19,6 +17,7 @@ services:
       - "${KADMIN_PORT:-749}:749/udp"
     environment:
       - KRB_REALM
+      - REALM_NAME
       - KRB_DOMAIN_NAME
       - KRB_ADMIN_PASSWORD
       - KRB_MASTER_PASSWORD
@@ -102,7 +101,6 @@ services:
     volumes:
       - ldap:/var/lib/openldap
       - keytab:/etc/krb5keytab
-      - slapdolc:/etc/openldap/slapd.d
     hostname: ${LDAP_HOSTNAME:-slapd}
     ports:
       - "${LDAP_PORT:-389}:389/tcp"
@@ -185,7 +183,6 @@ services:
 volumes:
   kdb:
   ldap:
-  slapdolc:
   keytab:
   samlcert:
 
